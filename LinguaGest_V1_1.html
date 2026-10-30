@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LinguaGest V1.1</title>
+<style>
+:root{--navy:#172554;--blue:#3157c8;--pale:#eef2ff;--ink:#182033;--muted:#68738a;--line:#e5e9f2;--bg:#f6f8fc;--green:#16845b;--red:#bd3b48;--amber:#9a6500}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:linear-gradient(120deg,#172554,#3157c8);color:white;padding:20px max(18px,calc((100% - 1200px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:23px;font-weight:850}.brand span{color:#c7d2fe}.tag{font-size:12px;color:#dbe5ff}
+.wrap{max-width:1200px;margin:22px auto;padding:0 16px}.notice{background:#fff8e6;border:1px solid #f2dda6;border-radius:11px;padding:12px 14px;color:#76550b;margin-bottom:16px;font-size:13px}
+.layout{display:grid;grid-template-columns:210px 1fr;gap:18px}.side,.panel,.card{background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 20px #15234b08}.side{padding:10px;height:max-content}.nav{width:100%;text-align:left;border:0;background:white;padding:11px;border-radius:8px;color:#46516a;font-weight:650;cursor:pointer;margin:2px 0}.nav.active,.nav:hover{background:var(--pale);color:var(--blue)}
+.page{display:none}.page.active{display:block}.heading{display:flex;justify-content:space-between;gap:12px;margin:0 0 15px}.heading h1{font-size:24px;margin:0 0 4px}.sub,.small{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:15px}.card{padding:15px}.stat-label{font-size:12px;color:var(--muted)}.stat-value{font-size:27px;font-weight:850;color:var(--navy);margin-top:4px}
+.panel{padding:17px;margin-bottom:15px}.panel h2{font-size:17px;margin:0 0 13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.full{grid-column:1/-1}label{font-size:12px;font-weight:700;color:#48536a}input,select{width:100%;padding:10px 11px;border:1px solid #d9dfeb;border-radius:8px;background:white;font:inherit;color:var(--ink)}input:focus,select:focus{outline:2px solid #c7d2fe;border-color:var(--blue)}
+button{border:0;border-radius:8px;padding:10px 13px;font:600 13px system-ui;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:var(--pale);color:var(--blue)}.danger{background:#fff0f1;color:var(--red)}.success{background:#e8f7f0;color:var(--green)}.warn{background:#fff5dc;color:var(--amber)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}th{font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);background:#fafbfe}.table-wrap{overflow-x:auto}.empty{padding:18px;text-align:center;color:var(--muted)}.pill{display:inline-block;border-radius:30px;padding:4px 8px;font-size:11px;font-weight:750;background:var(--pale);color:var(--blue)}.pill.pending{background:#fff5dc;color:var(--amber)}.pill.accepted{background:#e8f7f0;color:var(--green)}.pill.rejected{background:#fff0f1;color:var(--red)}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.check{display:flex;align-items:flex-start;gap:8px;padding:9px;border:1px solid var(--line);border-radius:8px;font-size:13px}.check input{width:auto;margin-top:3px}.result{background:#f7f9ff;border:1px dashed #c9d4f5;border-radius:9px;padding:12px;margin-top:12px;white-space:pre-wrap;font-size:13px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}header{padding:16px}.grid{grid-template-columns:1fr}}
+@media(max-width:430px){.checks{grid-template-columns:1fr}.heading{display:block}}
+</style></head>
+<body>
+<header><div><div class="brand">Lingua<span>Gest</span></div><div class="tag">Gestion des inscriptions, modules et résultats</div></div><div class="tag">VERSION 1.1</div></header>
+<div class="wrap">
+<div class="notice"><b>Prototype V1.1 :</b> les demandes d'inscription passent maintenant par une validation administrateur et les étudiants peuvent sélectionner les modules proposés pour leur filière et leur niveau. Les données sont conservées localement dans ce navigateur. Pour obtenir un lien public partagé et une base commune, la plateforme devra être hébergée en ligne.</div>
+<div class="layout">
+<aside class="side">
+<button class="nav active" data-page="dashboard">Tableau de bord</button>
+<button class="nav" data-page="public">Formulaire étudiant</button>
+<button class="nav" data-page="requests">Demandes à valider</button>
+<button class="nav" data-page="students">Étudiants acceptés</button>
+<button class="nav" data-page="modules">Gestion des modules</button>
+<button class="nav" data-page="grades">Saisie des notes</button>
+<button class="nav" data-page="publish">Résultats</button>
+</aside>
+<main>
+<section id="dashboard" class="page active">
+<div class="heading"><div><h1>Tableau de bord</h1><div class="sub">Suivi général de la structure linguistique.</div></div></div>
+<div class="stats">
+<div class="card"><div class="stat-label">Demandes en attente</div><div class="stat-value" id="stPending">0</div></div>
+<div class="card"><div class="stat-label">Étudiants acceptés</div><div class="stat-value" id="stAccepted">0</div></div>
+<div class="card"><div class="stat-label">Modules disponibles</div><div class="stat-value" id="stModules">0</div></div>
+<div class="card"><div class="stat-label">Notes enregistrées</div><div class="stat-value" id="stGrades">0</div></div>
+</div>
+<div class="panel"><h2>Processus d'inscription</h2><p class="small">L'étudiant remplit le formulaire, choisit sa filière, son niveau et les modules souhaités. Sa demande reste « En attente » jusqu'à ta décision. Seuls les étudiants acceptés peuvent être notés et apparaître dans la liste officielle.</p></div>
+<div class="panel"><h2>Répartition des demandes</h2><div id="distribution" class="table-wrap"></div></div>
+</section>
+
+<section id="public" class="page">
+<div class="heading"><div><h1>Inscription étudiant</h1><div class="sub">Formulaire destiné aux candidats. La demande sera soumise à validation.</div></div></div>
+<div class="panel"><form id="studentForm">
+<div class="grid">
+<div class="field"><label>Nom *</label><input id="sNom" required maxlength="60"></div>
+<div class="field"><label>Prénom *</label><input id="sPrenom" required maxlength="80"></div>
+<div class="field"><label>Date de naissance *</label><input id="sDate" type="date" required></div>
+<div class="field"><label>Matricule *</label><input id="sMat" required maxlength="40"></div>
+<div class="field"><label>Adresse e-mail *</label><input id="sEmail" type="email" required></div>
+<div class="field"><label>Filière linguistique *</label><select id="sTrack" required><option value="">Choisir</option><option>Allemand</option><option>Italien</option><option>Anglais</option><option>Français</option></select></div>
+<div class="field"><label>Niveau *</label><select id="sLevel" required><option value="">Choisir</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></div>
+<div class="field full"><label>Modules souhaités * — sélectionne un ou plusieurs modules</label><div id="moduleChoices" class="checks"><div class="small">Choisis d'abord une filière et un niveau pour afficher les modules disponibles.</div></div></div>
+</div>
+<div class="actions"><button class="primary">Envoyer ma demande</button><button type="reset" class="secondary" id="resetStudent">Effacer</button></div>
+<div id="formMessage" class="result hidden"></div>
+</form></div>
+</section>
+
+<section id="requests" class="page">
+<div class="heading"><div><h1>Demandes à valider</h1><div class="sub">Examine les informations et les modules choisis avant de prendre une décision.</div></div></div>
+<div class="panel"><div id="requestsTable" class="table-wrap"></div></div>
+</section>
+
+<section id="students" class="page">
+<div class="heading"><div><h1>Étudiants acceptés</h1><div class="sub">Liste officielle des inscriptions validées.</div></div><button class="secondary" onclick="exportStudents()">Exporter CSV</button></div>
+<div class="panel"><div class="grid" style="margin-bottom:12px"><div class="field"><label>Recherche</label><input id="studentSearch" placeholder="Nom, matricule, e-mail..." oninput="renderStudents()"></div><div class="field"><label>Filière</label><select id="studentFilter" onchange="renderStudents()"><option value="">Toutes</option><option>Allemand</option><option>Italien</option><option>Anglais</option><option>Français</option></select></div></div><div id="studentsTable" class="table-wrap"></div></div>
+</section>
+
+<section id="modules" class="page">
+<div class="heading"><div><h1>Gestion des modules</h1><div class="sub">Définis les modules proposés à l'inscription par filière et niveau.</div></div></div>
+<div class="panel"><h2>Ajouter un module</h2><form id="moduleForm"><div class="grid">
+<div class="field"><label>Nom du module *</label><input id="mName" required placeholder="Ex. Compréhension orale"></div>
+<div class="field"><label>Filière *</label><select id="mTrack" required><option value="">Choisir</option><option>Allemand</option><option>Italien</option><option>Anglais</option><option>Français</option></select></div>
+<div class="field"><label>Niveau *</label><select id="mLevel" required><option value="">Choisir</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></div>
+<div class="field"><label>Coefficient du module</label><input id="mCoef" type="number" min="0.1" step="0.1" value="1" required></div>
+</div><div class="actions"><button class="primary">Ajouter le module</button></div></form></div>
+<div class="panel"><h2>Modules enregistrés</h2><div id="modulesTable" class="table-wrap"></div></div>
+</section>
+
+<section id="grades" class="page">
+<div class="heading"><div><h1>Saisie des notes</h1><div class="sub">Enregistre les évaluations des étudiants dont l'inscription est acceptée.</div></div></div>
+<div class="panel"><form id="gradeForm"><div class="grid">
+<div class="field"><label>Étudiant *</label><select id="gStudent" required></select></div>
+<div class="field"><label>Module *</label><select id="gModule" required></select></div>
+<div class="field"><label>Évaluation *</label><input id="gEval" required placeholder="Ex. Évaluation 1"></div>
+<div class="field"><label>Note sur 20 *</label><input id="gScore" type="number" min="0" max="20" step="0.01" required></div>
+<div class="field"><label>Coefficient de l'évaluation</label><input id="gCoef" type="number" min="0.1" step="0.1" value="1" required></div>
+</div><div class="actions"><button class="primary">Enregistrer la note</button></div></form></div>
+<div class="panel"><h2>Notes enregistrées</h2><div id="gradesTable" class="table-wrap"></div></div>
+</section>
+
+<section id="publish" class="page">
+<div class="heading"><div><h1>Résultats</h1><div class="sub">Prépare les relevés individuels ou par groupe.</div></div></div>
+<div class="panel"><div class="grid">
+<div class="field"><label>Filière</label><select id="pTrack"><option value="">Toutes</option><option>Allemand</option><option>Italien</option><option>Anglais</option><option>Français</option></select></div>
+<div class="field"><label>Niveau</label><select id="pLevel"><option value="">Tous</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></div>
+<div class="field full"><label>Étudiant (facultatif)</label><select id="pStudent"><option value="">Tout le groupe filtré</option></select></div>
+</div><div class="actions"><button class="primary" onclick="preparePublication()">Générer les relevés</button></div><div id="publicationOutput"></div></div>
+<div class="panel"><p class="small">La V1.1 prépare et imprime les résultats, mais n'envoie pas encore les e-mails. L'envoi réel sera ajouté après le déploiement en ligne et la connexion d'un service d'e-mail.</p></div>
+</section>
+</main></div><footer>LinguaGest V1.1 — Prototype local avec validation des inscriptions</footer></div>
+
+<script>
+const KEY='lingu agest_v11'.replace(' ','_');
+let db;try{db=JSON.parse(localStorage.getItem(KEY))||{students:[],modules:[],grades:[]}}catch(e){db={students:[],modules:[],grades:[]}}
+const $=id=>document.getElementById(id);
+const tracks=['Allemand','Italien','Anglais','Français'],levels=['A1','A2','B1','B2','C1'];
+function save(){localStorage.setItem(KEY,JSON.stringify(db));refresh()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function nav(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===p));refresh()}
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>nav(b.dataset.page));
+function updateChoices(){let t=$('sTrack').value,l=$('sLevel').value;let ms=db.modules.filter(m=>m.track===t&&m.level===l);$('moduleChoices').innerHTML=ms.length?ms.map(m=>`<label class="check"><input type="checkbox" name="chosenModules" value="${m.id}"><span>${esc(m.name)} <span class="small">(coef. ${m.coef})</span></span></label>`).join(''):'<div class="small">Aucun module disponible pour cette combinaison. Contacte la structure ou réessaie plus tard.</div>'}
+$('sTrack').addEventListener('change',updateChoices);$('sLevel').addEventListener('change',updateChoices);
+$('resetStudent').addEventListener('click',()=>setTimeout(()=>{$('formMessage').classList.add('hidden');updateChoices()},0));
+$('studentForm').addEventListener('submit',e=>{
+ e.preventDefault();let selected=[...document.querySelectorAll('input[name="chosenModules"]:checked')].map(x=>x.value);
+ if(!selected.length)return alert('Sélectionne au moins un module.');
+ let s={id:uid(),nom:$('sNom').value.trim(),prenom:$('sPrenom').value.trim(),date:$('sDate').value,mat:$('sMat').value.trim(),email:$('sEmail').value.trim(),track:$('sTrack').value,level:$('sLevel').value,moduleIds:selected,status:'pending',submittedAt:new Date().toISOString()};
+ if(db.students.some(x=>x.mat.toLowerCase()===s.mat.toLowerCase()))return alert('Ce matricule a déjà fait l’objet d’une inscription.');
+ if(db.students.some(x=>x.email.toLowerCase()===s.email.toLowerCase()))return alert('Cette adresse e-mail a déjà été utilisée.');
+ db.students.push(s);save();e.target.reset();updateChoices();$('formMessage').textContent='Votre demande a bien été envoyée. Elle est en attente de validation par l’administration. Vous serez informé(e) de la décision par la structure.';$('formMessage').classList.remove('hidden');
+});
+$('moduleForm').addEventListener('submit',e=>{e.preventDefault();let m={id:uid(),name:$('mName').value.trim(),track:$('mTrack').value,level:$('mLevel').value,coef:Number($('mCoef').value)};if(db.modules.some(x=>x.name.toLowerCase()===m.name.toLowerCase()&&x.track===m.track&&x.level===m.level))return alert('Ce module existe déjà pour cette filière et ce niveau.');db.modules.push(m);e.target.reset();$('mCoef').value=1;save();updateChoices();alert('Module ajouté.');});
+function approve(id,status){let s=db.students.find(x=>x.id===id);if(!s)return;if(status==='accepted'&&!confirm('Valider cette inscription ?'))return;if(status==='rejected'&&!confirm('Refuser cette inscription ?'))return;s.status=status;s.decisionAt=new Date().toISOString();save()}
+function removeStudent(id){if(confirm('Supprimer définitivement cette demande et ses notes ?')){db.students=db.students.filter(s=>s.id!==id);db.grades=db.grades.filter(g=>g.studentId!==id);save()}}
+function renderRequests(){let a=db.students.filter(s=>s.status==='pending');$('requestsTable').innerHTML=a.length?`<table><thead><tr><th>Étudiant</th><th>Contact</th><th>Filière / niveau</th><th>Modules demandés</th><th>Décision</th></tr></thead><tbody>${a.map(s=>`<tr><td><b>${esc(s.nom)} ${esc(s.prenom)}</b><br><span class="small">${esc(s.mat)} · Né(e) le ${esc(s.date)}</span></td><td>${esc(s.email)}</td><td>${esc(s.track)} <span class="pill">${esc(s.level)}</span></td><td>${moduleNames(s).map(esc).join(', ')||'—'}</td><td><div class="actions"><button class="success" onclick="approve('${s.id}','accepted')">Accepter</button><button class="danger" onclick="approve('${s.id}','rejected')">Refuser</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune demande en attente.</div>'}
+function moduleNames(s){return (s.moduleIds||[]).map(id=>db.modules.find(m=>m.id===id)?.name).filter(Boolean)}
+function renderStudents(){let q=($('studentSearch')?.value||'').toLowerCase(),f=$('studentFilter')?.value||'';let a=db.students.filter(s=>s.status==='accepted'&&(!f||s.track===f)&&[s.nom,s.prenom,s.mat,s.email].join(' ').toLowerCase().includes(q));$('studentsTable').innerHTML=a.length?`<table><thead><tr><th>Étudiant</th><th>Matricule</th><th>Filière / niveau</th><th>E-mail</th><th>Modules</th></tr></thead><tbody>${a.map(s=>`<tr><td>${esc(s.nom)} ${esc(s.prenom)}</td><td>${esc(s.mat)}</td><td>${esc(s.track)} · ${esc(s.level)}</td><td>${esc(s.email)}</td><td>${moduleNames(s).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucun étudiant accepté.</div>'}
+function renderModules(){$('modulesTable').innerHTML=db.modules.length?`<table><thead><tr><th>Module</th><th>Filière</th><th>Niveau</th><th>Coef.</th><th></th></tr></thead><tbody>${db.modules.map(m=>`<tr><td>${esc(m.name)}</td><td>${esc(m.track)}</td><td>${esc(m.level)}</td><td>${m.coef}</td><td><button class="danger" onclick="deleteModule('${m.id}')">Supprimer</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucun module créé.</div>'}
+function deleteModule(id){if(confirm('Supprimer ce module ? Les sélections existantes seront conservées dans les demandes, mais le module ne sera plus disponible.')){db.modules=db.modules.filter(m=>m.id!==id);save();updateChoices()}}
+$('gradeForm').addEventListener('submit',e=>{e.preventDefault();let s=db.students.find(x=>x.id===$('gStudent').value),m=db.modules.find(x=>x.id===$('gModule').value),score=Number($('gScore').value),coef=Number($('gCoef').value);if(!s||!m)return alert('Choisis un étudiant et un module.');if(!s.moduleIds.includes(m.id))return alert('Cet étudiant n’a pas choisi ce module lors de son inscription.');if(score<0||score>20||coef<=0)return alert('Vérifie la note et le coefficient.');db.grades.push({id:uid(),studentId:s.id,moduleId:m.id,evaluation:$('gEval').value.trim(),score,coef});e.target.reset();$('gCoef').value=1;save();alert('Note enregistrée.');});
+function renderGrades(){$('gradesTable').innerHTML=db.grades.length?`<table><thead><tr><th>Étudiant</th><th>Module</th><th>Évaluation</th><th>Note /20</th><th>Coef.</th><th></th></tr></thead><tbody>${db.grades.map(g=>{let s=db.students.find(x=>x.id===g.studentId),m=db.modules.find(x=>x.id===g.moduleId);return `<tr><td>${s?esc(s.nom+' '+s.prenom):'—'}</td><td>${m?esc(m.name):'—'}</td><td>${esc(g.evaluation)}</td><td>${g.score.toFixed(2)}</td><td>${g.coef}</td><td><button class="danger" onclick="deleteGrade('${g.id}')">Supprimer</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">Aucune note enregistrée.</div>'}
+function deleteGrade(id){if(confirm('Supprimer cette note ?')){db.grades=db.grades.filter(g=>g.id!==id);save()}}
+function weighted(gs){let c=gs.reduce((a,g)=>a+g.coef,0);return c?gs.reduce((a,g)=>a+g.score*g.coef,0)/c:null}
+function preparePublication(){let t=$('pTrack').value,l=$('pLevel').value,one=$('pStudent').value;let a=db.students.filter(s=>s.status==='accepted'&&(!t||s.track===t)&&(!l||s.level===l)&&(!one||s.id===one));if(!a.length){$('publicationOutput').innerHTML='<div class="empty">Aucun étudiant correspondant.</div>';return}let data=a.map(s=>{let gs=db.grades.filter(g=>g.studentId===s.id),lines=gs.map(g=>{let m=db.modules.find(x=>x.id===g.moduleId);return m?`${m.name} — ${g.evaluation} : ${g.score.toFixed(2)}/20 (coef. ${g.coef})`:''}).filter(Boolean);return {s,lines,avg:weighted(gs)}});window.pubData=data;$('publicationOutput').innerHTML=data.map(o=>`<div class="result"><b>${esc(o.s.nom+' '+o.s.prenom)}</b> — ${esc(o.s.email)}\nMatricule : ${esc(o.s.mat)} | ${esc(o.s.track)} ${esc(o.s.level)}\nModules : ${moduleNames(o.s).map(esc).join(', ')}\n${o.lines.map(esc).join('\n')||'Aucune note saisie.'}\nMoyenne pondérée des notes saisies : ${o.avg===null?'—':o.avg.toFixed(2)+'/20'}</div>`).join('')+'<div class="actions"><button class="secondary" onclick="window.print()">Imprimer / Enregistrer en PDF</button></div>'}
+function exportStudents(){let a=db.students.filter(s=>s.status==='accepted'),rows=[['Nom','Prénom','Date naissance','Matricule','Email','Filière','Niveau','Modules'],...a.map(s=>[s.nom,s.prenom,s.date,s.mat,s.email,s.track,s.level,moduleNames(s).join(' | ')])];let csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n'),u=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'})),aTag=document.createElement('a');aTag.href=u;aTag.download='lingu agest_etudiants.csv'.replace(' ','');aTag.click();URL.revokeObjectURL(u)}
+function refresh(){let pending=db.students.filter(s=>s.status==='pending').length,accepted=db.students.filter(s=>s.status==='accepted').length;$('stPending').textContent=pending;$('stAccepted').textContent=accepted;$('stModules').textContent=db.modules.length;$('stGrades').textContent=db.grades.length;
+$('distribution').innerHTML=`<table><thead><tr><th>Filière</th><th>En attente</th><th>Acceptés</th><th>Refusés</th></tr></thead><tbody>${tracks.map(t=>`<tr><td>${t}</td><td>${db.students.filter(s=>s.track===t&&s.status==='pending').length}</td><td>${db.students.filter(s=>s.track===t&&s.status==='accepted').length}</td><td>${db.students.filter(s=>s.track===t&&s.status==='rejected').length}</td></tr>`).join('')}</tbody></table>`;
+renderRequests();renderStudents();renderModules();renderGrades();
+$('gStudent').innerHTML='<option value="">Choisir un étudiant accepté</option>'+db.students.filter(s=>s.status==='accepted').map(s=>`<option value="${s.id}">${esc(s.nom+' '+s.prenom+' — '+s.mat)}</option>`).join('');
+$('gModule').innerHTML='<option value="">Choisir un module</option>'+db.modules.map(m=>`<option value="${m.id}">${esc(m.name+' — '+m.track+' '+m.level)}</option>`).join('');
+$('pStudent').innerHTML='<option value="">Tout le groupe filtré</option>'+db.students.filter(s=>s.status==='accepted').map(s=>`<option value="${s.id}">${esc(s.nom+' '+s.prenom+' — '+s.mat)}</option>`).join('');
+}
+refresh();updateChoices();
+</script></body></html>
